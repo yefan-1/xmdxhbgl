@@ -1,0 +1,8 @@
+{
+  "name": "厦门大学海报涂鸦管理系统 V20",
+  "description": "标准后台模板",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
