@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SYSTEM_FEATURE_CATALOG, FeatureItem } from '../../data/featureCatalogData';
+import { BACKEND_PRD_DOCUMENT_MD } from '../../data/backendPrdDocument';
 
 interface SystemFeatureCatalogModalProps {
   isOpen: boolean;
@@ -129,7 +130,24 @@ export default function SystemFeatureCatalogModal({ isOpen, onClose }: SystemFea
     setTimeout(() => setDownloadSuccessToast(null), 3000);
   };
 
-  // 3. Copy TSV directly to Clipboard for pasting into Excel
+  // 3. Download Backend PRD Specification Document (.md)
+  const handleDownloadBackendPrdMarkdown = () => {
+    const blob = new Blob([BACKEND_PRD_DOCUMENT_MD], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const timestamp = new Date().toISOString().slice(0, 10);
+    link.setAttribute('download', `厦门大学海报与芙蓉隧道涂鸦管理系统_后台管理系统业务逻辑需求说明书_${timestamp}.md`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setDownloadSuccessToast('已成功导出完整《后台管理系统业务逻辑需求说明书 (PRD.md)》！');
+    setTimeout(() => setDownloadSuccessToast(null), 3500);
+  };
+
+  // 4. Copy TSV directly to Clipboard for pasting into Excel
   const handleCopyToClipboard = async () => {
     const headers = ['序号', '系统名称', '块名称', '功能点', '功能点描述', '模块编号', '适用对象'];
     const rows = filteredData.map((item, idx) => [
@@ -261,14 +279,24 @@ export default function SystemFeatureCatalogModal({ isOpen, onClose }: SystemFea
               <span>下载 Excel/CSV 表格</span>
             </button>
 
-            {/* Download Markdown */}
+            {/* Download Backend PRD Markdown */}
+            <button
+              onClick={handleDownloadBackendPrdMarkdown}
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white text-xs font-black shadow-sm hover:shadow transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              title="导出完整的《后台管理系统业务逻辑需求说明书 (PRD.md)》，纯业务逻辑规格，可直接指导后端开发"
+            >
+              <FileText size={14} className="text-blue-100" />
+              <span>导出后台PRD说明书 (MD)</span>
+            </button>
+
+            {/* Download Markdown Catalog */}
             <button
               onClick={handleDownloadMarkdown}
               className="px-3 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
-              title="下载为 Markdown 格式技术文档"
+              title="下载为 Markdown 格式功能清单表格"
             >
               <FileText size={14} className="text-blue-600" />
-              <span>下载 Markdown</span>
+              <span>下载清单 MD</span>
             </button>
 
             {/* Copy to Clipboard */}

@@ -76,6 +76,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import SystemFeatureCatalogModal from './common/SystemFeatureCatalogModal';
+import { BACKEND_PRD_DOCUMENT_MD } from '../data/backendPrdDocument';
 
 interface NavItem {
   id: string;
@@ -317,6 +318,19 @@ export default function Layout({
   onBackToLanding
 }: LayoutProps) {
   const [isFeatureCatalogOpen, setIsFeatureCatalogOpen] = useState(false);
+
+  const handleDirectDownloadPrd = () => {
+    const blob = new Blob([BACKEND_PRD_DOCUMENT_MD], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const timestamp = new Date().toISOString().slice(0, 10);
+    link.setAttribute('download', `厦门大学海报与芙蓉隧道涂鸦管理系统_后台管理系统业务逻辑需求说明书_${timestamp}.md`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
   const [expandedGroups, setExpandedGroups] = useState<string[]>([
     'poster-mgmt-group',
     'graffiti-mgmt-group',
@@ -806,6 +820,16 @@ export default function Layout({
             >
               <FileSpreadsheet size={14} className="text-emerald-600 group-hover:scale-110 transition-transform" />
               <span>功能清单下载</span>
+            </button>
+
+            {/* 后台系统业务逻辑需求说明书 (PRD.md) 直接下载按钮 */}
+            <button
+              onClick={handleDirectDownloadPrd}
+              className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200/90 rounded-xl font-black text-xs transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer shadow-xs group"
+              title="导出完整的《后台管理系统业务逻辑需求说明书 (PRD.md)》，纯业务逻辑，直接指导后端开发"
+            >
+              <FileText size={14} className="text-indigo-600 group-hover:scale-110 transition-transform" />
+              <span>导出业务PRD (MD)</span>
             </button>
 
             {/* 后台系统角色选择下拉框 */}
